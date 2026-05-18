@@ -1,0 +1,30 @@
+USE ChakraDataDB;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChakraVectorsData]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE ChakraVectorsData 
+	(
+		[Index] INT PRIMARY KEY FOREIGN KEY REFERENCES ChakraMetaData([Index]),
+
+		[Name] VARCHAR(50) NOT NULL,
+		ColorHex VARCHAR(7) NOT NULL,
+
+		PositionX FLOAT NOT NULL,
+		PositionY FLOAT NOT NULL,
+
+		ColorRGB_R FLOAT NOT NULL,
+		ColorRGB_G FLOAT NOT NULL,
+		ColorRGB_B FLOAT NOT NULL,
+
+		ColorRGB_A FLOAT NOT NULL,
+		ColorRGB_B FLOAT NOT NULL,
+		ColorRGB_C FLOAT NOT NULL,
+		ColorRGB_T FLOAT NOT NULL,
+
+		RawDataV VARBINARY(MAX) NOT NULL
+
+	);
+END
+GO
+
