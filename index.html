@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chakra Physics</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div id="app" class="container">
+        <header>
+
+            <!-- LOGO -->
+
+            <div class="logo-container">
+                <div class="logo-icon-wrapper">
+                    <svg class="logo-svg" viewBox="0 0 100 100">
+                        <circle class="logo-ring outer" cx="50" cy="50" r="45" />
+                        <circle class="logo-ring middle" cx="50" cy="50" r="30" />
+                        <circle class="core" cx="50" cy="50" r="10" />
+                        <defs>
+                            <radialGradient id="logoGrad">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="50%" stop-color="var(--accent)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </radialGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Super<span>Chakra</span></h1>
+                </div>
+            </div>
+
+            <!-- ADMIN / USER CONTROL -->
+
+            <nav class="admin-controls">
+
+                <div class="control-section admin-zone">
+                    <span class="section-title admin-title">Administrator</span>
+                    <div class="group">
+                        <span class="label">Datenbank:</span>
+                        <button class="btn btn-init" @click="dbAction('db_create')">DB Initial</button>
+                        <button class="btn btn-danger" @click="dbAction('db_drop')">DB Delete!</button>
+                    </div>
+
+                    <div class="group">
+                        <span class="label">Tabellen:</span>
+                        <button class="btn btn-init" @click="moduleAction('tables_create')">Table Initial</button>
+                        <button class="btn btn-danger" @click="moduleAction('tables_drop')">Table Delete!</button>
+                    </div>
+
+                    <div class="group">
+                        <span class="label">Daten:</span>
+                        <button class="btn btn-seed" @click="moduleAction('seed_all')">Full Seed</button>
+                        <button class="btn btn-danger" @click="moduleAction('pop_last')">Pop (Last Row)</button>
+                    </div>
+                </div>
+
+                <div class="control-section app-zone">
+                    <span class="section-title app-title">Anwendung</span>
+                    <div class="group">
+                        <span class="label">Ansicht:</span>
+                        <button class="btn btn-nav btn-meta" :class="{ active: activeView === 'meta' }" @click="switchTable('meta')">Meta</button>
+                        <button class="btn btn-nav btn-physics" :class="{ active: activeView === 'physics' }" @click="switchTable('physics')">Physics</button>
+                        <button class="btn btn-binary btn-nav" :class="{ active: activeView === 'binary' }" @click="switchTable('binary')">Binary</button>
+                        <button class="btn btn-entity btn-nav" :class="{ active: activeView === 'entity' }" @click="switchTable('entity')">Entity</button>
+                    </div>
+
+                    <div class="group">
+                        <span class="label">System:</span>
+                        <button class="btn btn-refresh" @click="sqlAction('refresh')">Werte laden</button>
+                        <button class="btn btn-quit" @click="sqlAction('app_exit')">Beenden</button>
+                    </div>
+                </div>
+
+            </nav>
+
+        </header>
+
+        <main>
+
+            <!-- TABELLEN -->
+            <!-- META -->
+
+            <div id="view-meta" class="table-view" v-show="activeView === 'meta'">
+                <div class="view-header">
+                    <h2>Meta Daten: <small>Ausgabe</small></h2>
+                </div>
+                <table id="metaTable">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Name <span class="unit">(Hex)</span></th>
+                            <th>Farbe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in chakraData" :key="item.Index" :class="'chakra-' + item.Index">
+                            <td>{{ item.Index }}</td>
+                            <td>{{ item.Name }}</td>
+                            <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PHYSICS -->
+
+            <div id="view-physics" class="table-view" v-show="activeView === 'physics'">
+                <div class="view-header">
+                    <h2>Physikalische Analysen: <small>Auswertungen</small></h2>
+                </div>
+                <table id="physicsTable">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Name</th>
+                            <th>Farbe <span class="unit">(Hex)</span></th>
+                            <th>Frequenz <span class="unit">(Hz)</span></th>
+                            <th>Zeit <span class="unit">(s)</span></th>
+                            <th>Stromstärke <span class="unit">(nA)</span></th>
+                            <th>Temperatur <span class="unit">(&deg;C)</span></th>
+                            <th>Radius <span class="unit">(m)</span></th>
+                            <th>Leitwert <span class="unit">(S)</span></th>
+                            <th>Wellenlänge <span class="unit">(&lambda;)</span></th>
+                            <th>Energie <span class="unit">(J)</span></th>
+                            <th>Volumendichte <span class="unit">(s/m&sup3;)</span></th>
+                            <th>Schub <span class="unit">(m&sup2;/s&sup2;)</span></th>
+                            <th>Echo <span class="unit">(s/m&sup3;)</span></th>
+                            <th>Volumen <span class="unit">(m&sup3;/s)</span></th>
+                            <th>Dichte <span class="unit">(%)</span></th>
+                            <th>Rotation <span class="unit">(m&sup2;/s&sup2;)</span></th>
+                            <th>Speed <span class="unit">(m/s)</span></th>
+                            <th>Beat <span class="unit">(Hz)</span></th>
+                            <th>Drehimpuls <span class="unit">(m&sup2;/s&sup2;)</span></th>
+                            <th>Hüllvolumen <span class="unit">(m&sup3;)</span></th>
+                            <th>Phasenverschiebung <span class="unit">(m)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in chakraData" :key="item.Index">
+                            <td>{{ item.Index }}</td>
+                            <td class="chakra-name">{{ item.Name }}</td>
+                            <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
+                            <td>{{ item.Frequenz }}</td>
+                            <td>{{ item.Zeit }}</td>
+                            <td>{{ item.Stromstaerke?.toFixed(4) }}</td>
+                            <td>{{ item.Temperatur }}</td>
+                            <td>{{ item.Radius }}</td>
+                            <td>{{ item.Leitwert }}</td>
+                            <td>{{ item.Wellenlaenge?.toFixed(4) }}</td>
+                            <td>{{ item.Energie?.toExponential(2) }}</td>
+                            <td>{{ item.Volumendichte?.toExponential(2) }}</td>
+                            <td>{{ item.Schub?.toFixed(0) }}</td>
+                            <td>{{ item.Echo?.toFixed(0) }}</td>
+                            <td>{{ item.Volumen?.toFixed(2) }}</td>
+                            <td>{{ (item.Dichte * 100)?.toFixed(1) }}</td>
+                            <td>{{ item.Rotation?.toFixed(0) }}</td>
+                            <td>{{ item.Speed?.toFixed(2) }}</td>
+                            <td>{{ item.Beat }}</td>
+                            <td>{{ item.Drehimpuls?.toExponential(2) }}</td>
+                            <td>{{ item.Huellvolumen?.toFixed(2) }}</td>
+                            <td>{{ item.Phasenverschiebung?.toFixed(4) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BINARY -->
+
+            <div id="view-binary" class="table-view" v-show="activeView === 'binary'">
+                <div class="view-header">
+                    <h2>Binäre Strukturen: <small>Datenkorrelation</small></h2>
+                </div>
+                <table id="binaryTable">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Name <span class="unit">(Hex)</span></th>
+                            <th>Farbe</th>
+                            <th>ID</th>
+                            <th>Zeit <span class="unit">(s)</span></th>
+                            <th>Signalwert <span class="unit">(bit)</span></th>
+                            <th>isActive</th>
+                            <th>TTL <span class="unit">(ticks)</span></th>
+                            <th>OriginalBytes</th>
+                            <th>OriginalBytesHex</th>
+                            <th>ByteSequence</th>
+                            <th>ByteSequenceHex</th>
+                            <th>FullBytes</th>
+                            <th>FullByteSequence</th>
+                            <th>FullByteSequenceHex</th>
+                            <th>Level <span class="unit">(%)</span></th>
+                            <th>Priorität <span class="unit">(P)</span></th>
+                            <th>Weight <span class="unit">(W)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in chakraData" :key="item.Index">
+                            <td>{{ item.Index }}</td>
+                            <td class="chakra-name">{{ item.Name }}</td>
+                            <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
+                            <td>{{ item.ID }}</td>
+                            <td>{{ item.Zeit }}</td>
+                            <td><span class="badge" :class="item.isActive ? 'active' : ''"></span> {{ item.Signalwert }}</td>
+                            <td>{{ item.isActive ? 'YES' : 'NO' }}</td>
+                            <td>{{ item.TTL }}</td>
+                            <td class="monobit">{{ item.OriginalBinaryString }}</td>
+                            <td>{{ item.OriginalBytesHex }}</td>
+                            <td class="monobit">{{ item.ByteSequence }}</td>
+                            <td>{{ item.ByteSequenceHex }}</td>
+                            <td>{{ item.FullBytes }}</td>
+                            <td class="monobit">{{ item.FullByteSequence }}</td>
+                            <td>{{ item.FullByteSequenceHex }}</td>
+                            <!-- ÄNDERUNG: Diese drei td-Platzhalter wurden ergänzt, damit die Spaltenanzahl mit dem Tabellenkopf (Level, Priorität, Weight) übereinstimmt -->
+                            <td>{{ item.Level }}</td>
+                            <td>{{ item.Priority }}</td>
+                            <td>{{ item.Weight }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ENTITY -->
+
+            <div id="view-entity" class="table-view" style="display:none">
+                <div class="view-header">
+                    <h2>Entity Eigenschaften: <small>Darstellung</small></h2>
+                    <table id="entityTable">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Name <span class="unit">(Hex)</span></th>
+                                <th>Farbe</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in chakraData" :key="item.Index" :class="'chakra-' + item.Index">
+
+                                <td>{{ item.Index }}</td>
+                                <td class="chakra-name">{{ item.Name }}</td>
+                                <td :style="{ color: item.ColorHex, fontWeight: 'bold' }">{{ item.ColorHex }}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PANEL -->
+
+            <div class="view-toggles">
+                <span class="label">Panel:</span>
+                <button class="btn btn-toggle" :class="{ active: showAnalysis }" @click="showAnalysis = !showAnalysis">Calc<span class="status-dot"></span></button>
+                <button class="btn btn-toggle" :class="{ active: showGraphics }" @click="showGraphics = !showGraphics">Graphics<span class="status-dot"></span></button>
+            </div>
+
+            <!-- CALC -->
+
+            <section class="analysis-panel" v-show="showAnalysis">
+
+                <header class="view-header">
+                    <h3>Rechenergebnisse: <small></small></h3>
+                </header>
+
+                <div class="analysis-table-wrapper">
+                    <table class="analysis-table">
+                        <thead>
+                            <tr>
+                                <th>Chakra</th>
+                                <th>Drehimpuls</th>
+                                <th>Hüllvolumen</th>
+                                <th>Phasenverschiebung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="res in analysisResults" :key="res.Index" :class="'chakra-' + res.Index">
+
+                                <td class="res-name">{{ res.Name }}</td>
+                                <td class="res-val">{{ res.Drehimpuls?.toExponential(3) }}</td>
+                                <td class="res-val">{{ res.Huellvolumen?.toFixed(4) }}</td>
+                                <td class="res-val">{{ res.Phasenverschiebung?.toFixed(4) }}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-actions">
+                    <button class="btn btn-refresh" @click="sqlAction('calculate_physics')">Werte Berechnen</button>
+                    <button class="btn btn-excel" @click="sqlAction('export_excel')">Excel Export</button>
+                    <button class="btn btn-save" @click="">Save to SQL</button>
+                </div>
+            </section>
+
+            <!-- GRAPHICS -->
+
+
+
+        </main>
+
+        <!-- FOOTER -->
+
+        <footer>
+            <div class="footer-content">
+                <p>&copy; {{ new Date().getFullYear() }} SuperChakra Develop - Project</p>
+                <p class="version-tag"><span>{{ version }}</span></p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="frameworks/vue.global.js"></script>
+    <script src="frameworks/apexcharts.min.js"></script>
+    <script src="frameworks/vue3-apexcharts.js"></script>
+    <script src="frameworks/two.min.js"></script>
+    <script src="frameworks/babylon.js"></script>
+    <script src="scriptVue.js"></script>
+</body>
+
+</html>
+
