@@ -1,0 +1,141 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	  
+	<!--VERSION -->
+
+	  <Version>1.3.6</Version>
+	  <AssemblyVersion>1.3.6.1</AssemblyVersion>
+	  <FileVersion>1.3.6.1</FileVersion>
+	  
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="system\sql\DBconf\db\createChakraDataDB.sql" />
+    <None Remove="system\sql\DBconf\db\dropChakraDataDB.sql" />
+    <None Remove="system\sql\DBconf\operations\popLastRowChakraBinary.sql" />
+    <None Remove="system\sql\DBconf\operations\popLastRowChakraMeta.sql" />
+    <None Remove="system\sql\DBconf\operations\popLastRowChakraPhysics.sql" />
+    <None Remove="system\sql\DBconf\seeds\seedChakraBinary.sql" />
+    <None Remove="system\sql\DBconf\seeds\seedChakraMeta.sql" />
+    <None Remove="system\sql\DBconf\seeds\seedChakraPhysics.sql" />
+    <None Remove="system\sql\DBconf\tables\createTablesChakraBinary.sql" />
+    <None Remove="system\sql\DBconf\tables\createTablesChakraMeta.sql" />
+    <None Remove="system\sql\DBconf\tables\createTablesChakraPhysics.sql" />
+    <None Remove="system\sql\DBconf\tables\dropChakraBinaryTables.sql" />
+    <None Remove="system\sql\DBconf\tables\dropChakraMetaTables.sql" />
+    <None Remove="system\sql\DBconf\tables\dropChakraPhysicsTables.sql" />
+    <None Remove="system\sql\output\loadChakraBinary.sql" />
+    <None Remove="system\sql\output\loadChakraMeta.sql" />
+    <None Remove="system\sql\output\loadChakraPhysics.sql" />
+    <None Remove="system\sql\output\relations\loadRelationBinary.sql" />
+    <None Remove="system\sql\output\relations\loadRelationPhysics.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="system\sql\DBconf\db\createChakraDataDB.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\db\dropChakraDataDB.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\operations\popLastRowChakraBinary.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\operations\popLastRowChakraMeta.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\operations\popLastRowChakraPhysics.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\seeds\seedChakraBinary.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\seeds\seedChakraMeta.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\seeds\seedChakraPhysics.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\createTablesChakraBinary.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\createTablesChakraMeta.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\createTablesChakraPhysics.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\dropChakraBinaryTables.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\dropChakraMetaTables.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\DBconf\tables\dropChakraPhysicsTables.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\output\loadChakraBinary.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\output\loadChakraMeta.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\output\loadChakraPhysics.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\output\relations\loadRelationBinary.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="system\sql\output\relations\loadRelationPhysics.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3912.50" />
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="system\sql\chakraVectors.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\frameworks\apexcharts.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\frameworks\vue3-apexcharts.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="archiv\web\script.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\scriptVue.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\style.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\style_old.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\frameworks\vue.global.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="exports\" />
+  </ItemGroup>
+
+</Project>
