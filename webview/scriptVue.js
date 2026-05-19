@@ -9,7 +9,11 @@ const app = createApp({
             showGraphics: false,
             chakraData: [],
             analysisResults: [],
-            version: '1.3.6'
+            version: '1.3.6',
+
+            chartDichte: null,
+            chartDrehimpuls: null,
+            chartRadar: null
         }
     },
 
@@ -81,13 +85,170 @@ const app = createApp({
 
         setAppVersion(v) {
             this.version = v;
+        },
+
+        toggleGraphics() {
+            this.showGraphics = !this.showGraphics;
+
+            if (this.showGraphics) {
+                this.$nextTick(() => {
+                    try {
+                        if (this.chartDichte && typeof this.chartDichte.destroy === 'function') this.chartDichte.destroy();
+                        if (this.chartDrehimpuls && typeof this.chartDrehimpuls.destroy === 'function') this.chartDrehimpuls.destroy();
+                        if (this.chartRadar && typeof this.chartRadar.destroy === 'function') this.chartRadar.destroy();
+
+                        this.initApexCharts();
+
+                        this.sendToApp('request_graphics_data');
+                    } catch (error) {
+                        console.error("Fehler beim Neuaufbau der Charts im DOM:", error);
+                    }
+                });
+            }
+        },
+
+        initApexCharts() {
+            const chartConfig = {
+                theme: { mode: 'dark', palette: 'palette1' },
+                chart: { background: 'transparent', foreColor: '#f5f5f5', fontFamily: 'Segoe UI, sans-serif' },
+                grid: { borderColor: '#333' }
+            };
+
+            // 1. Dichte - Kuchendiagramm
+            this.chartDichte = new ApexCharts(document.querySelector("#chart-dichte"), {
+                theme: { mode: 'dark' },
+                chart: { background: 'transparent', foreColor: '#f5f5f5', fontFamily: 'Segoe UI, sans-serif', type: 'pie', height: 320 },
+                grid: { borderColor: '#333' },
+
+                series: [],
+                labels: [],
+                title: { text: 'Dichte-Verteilung', align: 'center' },
+                legend: { position: 'bottom' },
+
+                colors: [
+                    '#FF0000',
+                    '#FF5C00',
+                    '#FFF500',
+                    '#00FF00',
+                    '#00FFFF',
+                    '#0000FF',
+                    '#FF00FF'
+                ]
+            });
+            this.chartDichte.render();
+
+            // 2. Drehimpuls - Liniendiagramm
+            this.chartDrehimpuls = new ApexCharts(document.querySelector("#chart-drehimpuls"), {
+                ...chartConfig,
+                chart: {
+                    ...chartConfig.chart,
+                    type: 'line',
+                    height: 320,
+                    toolbar: { show: false },
+                    grid: {
+                        padding: {
+                            bottom: 20
+                        }
+                    }
+                },
+                stroke: { curve: 'smooth', width: 4 },
+                series: [{ name: 'Drehimpuls', data: [] }],
+                xaxis: {
+                    type: 'category',
+                    categories: [],
+                    labels: {
+                        show: true,
+                        rotate: -45,
+                        style: { colors: '#f5f5f5', fontSize: '12px' }
+                    }
+                },
+                yaxis: {
+                    logarithmic: false,
+                    forceNiceScale: true,
+                    labels: {
+                        show: true,
+                        style: { colors: '#f5f5f5' },
+                        formatter: (value) => {
+                            if (value === 0) return '0';
+                            if (Math.abs(value) >= 10000 || Math.abs(value) < 0.1) {
+                                return Number(value).toExponential(1);
+                            }
+                            return value;
+                        }
+                    }
+                },
+                title: { text: 'Drehimpuls-Verlauf', align: 'center' },
+                colors: ['#00E396']
+            });
+            this.chartDrehimpuls.render();
+
+            // 3. Energie - Radar-Diagramm
+            this.chartRadar = new ApexCharts(document.querySelector("#chart-radar"), {
+                ...chartConfig,
+                chart: { ...chartConfig.chart, type: 'radar', height: 320 },
+                series: [{ name: 'Energie-Level', data: [] }],
+                labels: [],
+                title: { text: 'Energie-Harmonie', align: 'center' },
+                colors: ['#FF4560'],
+                fill: { opacity: 0.4 }
+            });
+            this.chartRadar.render();
+        },
+
+        updateApexCharts(data) {
+            const labels = data.map(c => c.name || c.Name);
+            const dichteWerte = data.map(c => c.dichte || c.Dichte);
+            const drehimpulsWerte = data.map(c => c.drehimpuls || c.Drehimpuls);
+            const energieWerte = data.map(c => c.energie || c.Energie);
+
+            if (!this.chartDichte || !this.chartDrehimpuls || !this.chartRadar) {
+                setTimeout(() => this.updateApexCharts(data), 100);
+                return;
+            }
+
+            try {
+                // Kuchendiagramm füttern
+                this.chartDichte.updateOptions({ labels: labels, series: dichteWerte });
+
+                // Liniendiagramm füttern: Wir übergeben X-Achse und Y-Werte im SELBEN Atemzug
+                this.chartDrehimpuls.updateOptions({
+                    xaxis: { categories: labels }
+                });
+                this.chartDrehimpuls.updateSeries([{
+                    name: 'Drehimpuls',
+                    data: drehimpulsWerte
+                }]);
+
+                // Radar-Diagramm füttern
+                this.chartRadar.updateOptions({ labels: labels });
+                this.chartRadar.updateSeries([{ name: 'Energie-Level', data: energieWerte }]);
+
+            } catch (error) {
+                console.error("Fehler beim Befüllen der frisch gebauten Charts:", error);
+            }
         }
 
     },
 
+    computed: {
+        maxZeit() {
+            if (!this.chakraData || this.chakraData.length === 0) return 0;
+            return Math.max(...this.chakraData.map(item => Number(item.Zeit || 0)));
+        },
+        maxStromstaerke() {
+            if (!this.chakraData || this.chakraData.length === 0) return 0;
+            return Math.max(...this.chakraData.map(item => Number(item.Stromstaerke2 || item.Stromstärke || item.Stromstaerke || 0)));
+        },
+        maxTemperatur() {
+            if (!this.chakraData || this.chakraData.length === 0) return 0;
+            return Math.max(...this.chakraData.map(item => Number(item.Temperatur || 0)));
+        }
+    },
+
     mounted() {
         console.log("SuperChakra Dashboard: Vue Core loaded.");
-    }
+    }   
+
 
 });
 
@@ -112,7 +273,19 @@ window.displayAnalysisResults = (rawResults) => {
         console.error("Fehler bei window.displayAnalysisResults:", e);
     }
 };
-
 window.setAppVersion = (v) => vm.setAppVersion(v);
 window.switchTable = (view) => vm.switchTable(view);
+
+window.renderChakraCharts = (rawChartData) => {
+    try {
+
+        console.log("===> WPF-BRÜCKE AUSGELÖST! Rohe Daten empfangen:", rawChartData);
+        const data = typeof rawChartData === 'string' ? JSON.parse(rawChartData) : rawChartData;
+        console.log("===> Geparste Daten für ApexCharts:", data);
+        vm.updateApexCharts(data);
+
+    } catch (e) {
+        console.error("Kritischer Fehler bei window.renderChakraCharts:", e);
+    }
+};
 
