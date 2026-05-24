@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Printing;
 using System.Windows.Documents;
 using System.Reflection;
+using System.Data;
 
 namespace SuperChakra.system
 {
@@ -143,6 +144,33 @@ namespace SuperChakra.system
                     catch (Exception ex) { Debug.WriteLine("Error Script Exec: " + ex.Message); }
                 }
             }
+        }
+
+        public DataTable GetDataTable(string query)
+        {
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(this.ConnectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        try
+                        {
+                            connection.Open();
+                            adapter.Fill(dataTable);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"SQL-Fehler in GetDataTable: {ex.Message}");
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            return dataTable;
         }
 
         // Datenbank - Methoden

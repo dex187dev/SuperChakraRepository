@@ -9,6 +9,7 @@ namespace SuperChakra.main
         // DATENQUELLEN
 
         private static readonly double[] zeit = { 0.00253, 0.0024, 0.00189, 0.00156, 0.00135, 0.00117, 0.00104 };
+        private static readonly byte sequence_01 = 0b01010011;
 
         // ### ORIGINAL BYTES CHAKRAS ###
 
@@ -41,13 +42,22 @@ namespace SuperChakra.main
         public int TTL { get; private set; }
         public int MaxTTL { get; set; }
 
+        // HILFSFELDER
+
+        public byte Sequence_01 => sequence_01;
+        public byte Sequence_02 { get; private set; }
+
         // ### ORIGINAL BYTES CHAKRAS ###
 
         public byte OriginalBytes { get; }
         public byte OriginalBytesHex { get; }
 
+        public byte OriginalBytesComplement { get; }
+        public byte OriginalBytesComplementHex { get; }
+
         public ulong ByteSequence { get; }
         public ulong ByteSequenceHex { get; }
+        
 
         // ### DIGITALE AUFBEREITUNG ###
         
@@ -96,6 +106,17 @@ namespace SuperChakra.main
                 if (TTL <= 0) isActive = false;
             }
         }
+
+        // Aufbereitung
+
+        public static byte CalcOriginalBytesComplement(byte input) 
+        { 
+            return (byte)(~input & 0x7F);
+        }
+
+        // Informationserweiterung
+
+        // Erweitert
 
         // Regenbogen
 

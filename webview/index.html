@@ -124,46 +124,46 @@
                             <th>Stromstärke <span class="unit">(nA)</span></th>
                             <th>Temperatur <span class="unit">(&deg;C)</span></th>
                             <th>Radius <span class="unit">(m)</span></th>
-                            <th>Leitwert <span class="unit">(S)</span></th>
                             <th>Wellenlänge <span class="unit">(&lambda;)</span></th>
+                            <th>Beat <span class="unit">(Hz)</span></th>
                             <th>Energie <span class="unit">(J)</span></th>
                             <th>Volumendichte <span class="unit">(s/m&sup3;)</span></th>
+                            <th>Drehimpuls <span class="unit">(m&sup2;/s&sup2;)</span></th>
                             <th>Schub <span class="unit">(m&sup2;/s&sup2;)</span></th>
                             <th>Echo <span class="unit">(s/m&sup3;)</span></th>
-                            <th>Volumen <span class="unit">(m&sup3;/s)</span></th>
                             <th>Dichte <span class="unit">(%)</span></th>
+                            <th>Volumen <span class="unit">(m&sup3;/s)</span></th>
                             <th>Rotation <span class="unit">(m&sup2;/s&sup2;)</span></th>
                             <th>Speed <span class="unit">(m/s)</span></th>
-                            <th>Beat <span class="unit">(Hz)</span></th>
-                            <th>Drehimpuls <span class="unit">(m&sup2;/s&sup2;)</span></th>
                             <th>Hüllvolumen <span class="unit">(m&sup3;)</span></th>
                             <th>Phasenverschiebung <span class="unit">(m)</span></th>
+                            <th>Leitwert <span class="unit">(S)</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="item in chakraData" :key="item.Index">
                             <td>{{ item.Index }}</td>
-                            <td class="chakra-name">{{ item.Name }}</td>
+                            <td :style="{ color: item.ColorHex }">{{ item.Name }}</td>
                             <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
-                            <td>{{ item.Frequenz }}</td>
-                            <td>{{ item.Zeit }}</td>
-                            <td>{{ item.Stromstaerke?.toFixed(4) }}</td>
-                            <td>{{ item.Temperatur }}</td>
-                            <td>{{ item.Radius }}</td>
-                            <td>{{ item.Leitwert }}</td>
-                            <td>{{ item.Wellenlaenge?.toFixed(4) }}</td>
+                            <td :class="{ 'highlight-frequenz': true }">{{ item.Frequenz }}</td>
+                            <td :class="{ 'highlight-max': isMaxValue(item.Zeit, 'Zeit') }">{{ item.Zeit }}</td>
+                            <td :class="{ 'highlight-max': isMaxValue(item.Stromstaerke, 'Stromstaerke') }">{{ Number(item.Stromstaerke || 0).toFixed(3) }}</td>
+                            <td :class="{ 'highlight-max': isMaxValue(item.Temperatur, 'Temperatur') }">{{ item.Temperatur }}</td>
+                            <td :class="{ 'highlight-radius': true }">{{ item.Radius }}</td>
+                            <td :class="{ 'highlight-wavelength': true }">{{ Number(item.Wellenlaenge || item.Wellenlänge || 0).toFixed(3) }}</td>
+                            <td :class="{ 'highlight-beat-trigger': Number(item.Beat) === 111 }">{{ item.Beat }}</td>
                             <td>{{ item.Energie?.toExponential(2) }}</td>
-                            <td>{{ item.Volumendichte?.toExponential(2) }}</td>
-                            <td>{{ item.Schub?.toFixed(0) }}</td>
-                            <td>{{ item.Echo?.toFixed(0) }}</td>
-                            <td>{{ item.Volumen?.toFixed(2) }}</td>
+                            <td>{{ Number(item.Volumendichte || 0).toExponential(2) }}</td>
+                            <td>{{ Number(item.Drehimpuls || 0).toExponential(2) }}</td>
+                            <td :class="{ 'highlight-schub': true }">{{ Number(item.Schub || 0).toFixed(2) }}</td>
+                            <td :class="{ 'highlight-echo': true }">{{ Number(item.Echo || 0).toFixed(2) }}</td>
                             <td>{{ (item.Dichte * 100)?.toFixed(1) }}</td>
-                            <td>{{ item.Rotation?.toFixed(0) }}</td>
-                            <td>{{ item.Speed?.toFixed(2) }}</td>
-                            <td>{{ item.Beat }}</td>
-                            <td>{{ item.Drehimpuls?.toExponential(2) }}</td>
-                            <td>{{ item.Huellvolumen?.toFixed(2) }}</td>
-                            <td>{{ item.Phasenverschiebung?.toFixed(4) }}</td>
+                            <td>{{ item.Volumen?.toFixed(3) }}</td>
+                            <td>{{ item.Rotation?.toFixed(2) }}</td>
+                            <td :class="{ 'highlight-speed': true }">{{ Number(item.Speed || 0).toFixed(3) }}</td>
+                            <td>{{ item.Huellvolumen?.toFixed(4) }}</td>
+                            <td :class="getPhasenverschiebungClass(item.Phasenverschiebung)">{{ Number(item.Phasenverschiebung || 0).toFixed(7) }}</td>
+                            <td>{{ item.Leitwert }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -183,43 +183,51 @@
                             <th>Farbe</th>
                             <th>ID</th>
                             <th>Zeit <span class="unit">(s)</span></th>
-                            <th>Signalwert <span class="unit">(bit)</span></th>
-                            <th>isActive</th>
                             <th>TTL <span class="unit">(ticks)</span></th>
                             <th>OriginalBytes</th>
                             <th>OriginalBytesHex</th>
-                            <th>ByteSequence</th>
-                            <th>ByteSequenceHex</th>
+                            <th>ByteSequence <span class="unit">(bit)</span></th>
                             <th>FullBytes</th>
-                            <th>FullByteSequence</th>
-                            <th>FullByteSequenceHex</th>
                             <th>Level <span class="unit">(%)</span></th>
                             <th>Priorität <span class="unit">(P)</span></th>
                             <th>Weight <span class="unit">(W)</span></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in chakraData" :key="item.Index">
-                            <td>{{ item.Index }}</td>
-                            <td class="chakra-name">{{ item.Name }}</td>
-                            <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
-                            <td>{{ item.ID }}</td>
-                            <td>{{ item.Zeit }}</td>
-                            <td><span class="badge" :class="item.isActive ? 'active' : ''"></span> {{ item.Signalwert }}</td>
-                            <td>{{ item.isActive ? 'YES' : 'NO' }}</td>
-                            <td>{{ item.TTL }}</td>
-                            <td class="monobit">{{ item.OriginalBinaryString }}</td>
-                            <td>{{ item.OriginalBytesHex }}</td>
-                            <td class="monobit">{{ item.ByteSequence }}</td>
-                            <td>{{ item.ByteSequenceHex }}</td>
-                            <td>{{ item.FullBytes }}</td>
-                            <td class="monobit">{{ item.FullByteSequence }}</td>
-                            <td>{{ item.FullByteSequenceHex }}</td>
-                            <!-- ÄNDERUNG: Diese drei td-Platzhalter wurden ergänzt, damit die Spaltenanzahl mit dem Tabellenkopf (Level, Priorität, Weight) übereinstimmt -->
-                            <td>{{ item.Level }}</td>
-                            <td>{{ item.Priority }}</td>
-                            <td>{{ item.Weight }}</td>
-                        </tr>
+                        <template v-for="item in chakraData" :key="item.Index">
+                            <tr v-if="item.Index === 0">
+                                <td>{{ item.Index }}</td>
+                                <td :style="{ color: item.ColorHex }">{{ item.Name }}</td>
+                                <td :style="{ color: item.ColorHex }">{{ item.ColorHex }}</td>
+                                <td>{{ item.ID }}</td>
+                                <td :class="{ 'highlight-max': isMaxValue(item.Zeit, 'Zeit') }">{{ item.Zeit }}</td>
+                                <td>{{ item.TTL }}</td>
+
+                                <td>
+                                    <div class="binary-matrix">
+                                        <div v-for="pos in [6, 5, 4, 3, 2, 1, 0]"
+                                             :key="pos"
+                                             class="bit-field"
+                                             :class="{ 'active': isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) }"
+                                             :style="{
+                             backgroundColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#222222',
+                             borderColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#333333',
+                             color: chakraFarben[pos]
+                         }"
+                                             :title="'Chakra Position: ' + pos">
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>{{ item.OriginalBytesHex }}</td>
+                                <td class="monobit">{{ item.ByteSequence }}</td>
+                                <td>{{ item.FullBytes }}</td>
+                                <!-- ÄNDERUNG: Diese drei td-Platzhalter wurden ergänzt, damit die Spaltenanzahl mit dem Tabellenkopf (Level, Priorität, Weight) übereinstimmt -->
+                                <td>{{ item.Level }}</td>
+                                <td>{{ item.Priority }}</td>
+                                <td>{{ item.Weight }}</td>
+                            </tr>
+                        </template>                        
                     </tbody>
                 </table>
             </div>
@@ -256,7 +264,7 @@
             <div class="view-toggles">
                 <span class="label">Panel:</span>
                 <button class="btn btn-toggle" :class="{ active: showAnalysis }" @click="showAnalysis = !showAnalysis">Calc<span class="status-dot"></span></button>
-                <button class="btn btn-toggle" :class="{ active: showGraphics }" @click="showGraphics = !showGraphics">Graphics<span class="status-dot"></span></button>
+                <button class="btn btn-toggle" :class="{ active: showGraphics }" @click="toggleGraphics">Graphics<span class="status-dot"></span></button>
             </div>
 
             <!-- CALC -->
@@ -271,10 +279,10 @@
                     <table class="analysis-table">
                         <thead>
                             <tr>
-                                <th>Chakra</th>
-                                <th>Drehimpuls</th>
-                                <th>Hüllvolumen</th>
-                                <th>Phasenverschiebung</th>
+                                <th>ID</th>
+                                <th>Bits</th>
+                                <th>BitsHex</th>
+                                <th>ByteSequence</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -298,7 +306,19 @@
 
             <!-- GRAPHICS -->
 
+            <section class="btn-graphics-panel" v-show="showGraphics">
 
+                <header class="view-header">
+                    <h3>Graphenergebnisse: <small></small></h3>
+                </header>
+
+                <div class="graphics-panel">
+                    <div id="chart-dichte" class="chart-box"></div>
+                    <div id="chart-drehimpuls" class="chart-box"></div>
+                    <div id="chart-radar" class="chart-box"></div>
+                </div>
+
+            </section>
 
         </main>
 
@@ -315,7 +335,6 @@
 
     <script src="frameworks/vue.global.js"></script>
     <script src="frameworks/apexcharts.min.js"></script>
-    <script src="frameworks/vue3-apexcharts.js"></script>
     <script src="frameworks/two.min.js"></script>
     <script src="frameworks/babylon.js"></script>
     <script src="scriptVue.js"></script>
