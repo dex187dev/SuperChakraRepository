@@ -13,7 +13,10 @@ const app = createApp({
 
             chartDichte: null,
             chartDrehimpuls: null,
-            chartRadar: null
+            chartRadar: null,
+
+            chakraFarben: ['#FF0000', '#FF8C00', '#FFFF00', '#008000', '#00BFFF', '#4B0082', '#800080']
+
         }
     },
 
@@ -226,24 +229,54 @@ const app = createApp({
             } catch (error) {
                 console.error("Fehler beim Befüllen der frisch gebauten Charts:", error);
             }
+        },
+
+        isMaxValue(currentValue, columnName) {
+
+            if (!this.chakraData || this.chakraData.length === 0) return false;
+
+            const columnValues = this.chakraData.map(item => Number(item[columnName] || 0));
+            const maxValue = Math.max(...columnValues);
+
+            return Number(currentValue || 0) === maxValue;
+        },
+
+        getPhasenverschiebungClass(currentValue) {
+            if (!this.chakraData || this.chakraData.length === 0) return '';
+
+            const currentStr = Number(currentValue || 0).toFixed(7);
+
+            if (currentStr === "0.0000000") return '';
+
+            const matches = this.chakraData.filter(item => {
+                const itemStr = Number(item.Phasenverschiebung || item.phasenverschiebung || 0).toFixed(7);
+                return itemStr === currentStr;
+            });
+
+            if (matches.length > 1) {
+                if (currentStr === "0.0067858") {
+                    return 'highlight-phase-pair-1';
+                }
+                if (currentStr === "0.0220540") {
+                    return 'highlight-phase-pair-2';
+                }
+                return 'highlight-phase-pair-1';
+            }
+            return '';
+        },
+
+        isBitActive(binaryString, position) {
+            if (!binaryString) return false;
+
+            const cleanStr = String(binaryString).replace(/\s+/g, '');
+            const targetChar = cleanStr.charAt(cleanStr.length - 1 - position);
+
+            return targetChar === '1';
         }
 
-    },
 
-    computed: {
-        maxZeit() {
-            if (!this.chakraData || this.chakraData.length === 0) return 0;
-            return Math.max(...this.chakraData.map(item => Number(item.Zeit || 0)));
-        },
-        maxStromstaerke() {
-            if (!this.chakraData || this.chakraData.length === 0) return 0;
-            return Math.max(...this.chakraData.map(item => Number(item.Stromstaerke2 || item.Stromstärke || item.Stromstaerke || 0)));
-        },
-        maxTemperatur() {
-            if (!this.chakraData || this.chakraData.length === 0) return 0;
-            return Math.max(...this.chakraData.map(item => Number(item.Temperatur || 0)));
-        }
-    },
+
+    },  
 
     mounted() {
         console.log("SuperChakra Dashboard: Vue Core loaded.");
