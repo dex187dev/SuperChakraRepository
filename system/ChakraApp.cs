@@ -7,13 +7,15 @@ namespace SuperChakra.system
     {
         // DATENQUELLEN
 
-        private readonly string version = "1.3.6";
+        private readonly string version = "1.3.8";
         private readonly string appName = "SuperChakra";
+        private readonly string arbeitstitel = "Semsterarbeit";
 
         // FELDER
 
         public string Version => version;
         public string AppName => appName;
+        public string Arbeitstitel => arbeitstitel;
 
         public bool IsDebugMode { get; }
 
