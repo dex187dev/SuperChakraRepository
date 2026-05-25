@@ -210,10 +210,10 @@
                                              class="bit-field"
                                              :class="{ 'active': isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) }"
                                              :style="{
-                             backgroundColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#222222',
-                             borderColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#333333',
-                             color: chakraFarben[pos]
-                         }"
+                                                         backgroundColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#222222',
+                                                         borderColor: isBitActive(item.OriginalBinaryString || item.OriginalBinaryString, pos) ? chakraFarben[pos] : '#333333',
+                                                         color: chakraFarben[pos]
+                                                     }"
                                              :title="'Chakra Position: ' + pos">
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                 <td>{{ item.Priority }}</td>
                                 <td>{{ item.Weight }}</td>
                             </tr>
-                        </template>                        
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -263,11 +263,11 @@
 
             <div class="view-toggles">
                 <span class="label">Panel:</span>
-                <button class="btn btn-toggle" :class="{ active: showAnalysis }" @click="showAnalysis = !showAnalysis">Calc<span class="status-dot"></span></button>
-                <button class="btn btn-toggle" :class="{ active: showGraphics }" @click="toggleGraphics">Graphics<span class="status-dot"></span></button>
+                <button class="btn btn-toggle btn-calc" :class="{ active: showAnalysis }" @click="showAnalysis = !showAnalysis">Calc<span class="status-dot"></span></button>
+                <button class="btn btn-toggle btn-graphics" :class="{ active: showGraphics }" @click="toggleGraphics">Graphics<span class="status-dot"></span></button>
             </div>
 
-            <!-- CALC -->
+            <!-- CALC -->            
 
             <section class="analysis-panel" v-show="showAnalysis">
 
@@ -275,30 +275,122 @@
                     <h3>Rechenergebnisse: <small></small></h3>
                 </header>
 
+                <!-- Physics -->
+
+                <h4>Physics Ergebnisse</h4>
+
+                <div class="analysis-table-wrapper">
+                    <table class="analysis-table">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Name</th>
+                                <th>TangenzGeschwindigkeit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="pRow in physicsRows" :key="pRow.Index">
+                                <td class="res-val">{{ pRow.Index }}</td>
+                                <td class="res-val">{{ pRow.Name }}</td>
+                                <td class="res-val">{{ pRow.TangenzGeschwindigkeit }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Binary -->
+
+                <h4>Binary Ergebnisse</h4>
                 <div class="analysis-table-wrapper">
                     <table class="analysis-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Bits</th>
-                                <th>BitsHex</th>
                                 <th>ByteSequence</th>
+                                <th>BitsHex</th>
+
+                                <th>Weight</th>
+                                <th>Priority</th>
+                                <th>Entropy</th>
+                                <th>Run Length</th>
+                                <th>Bit Density</th>
+                                <th>SNR</th>
+                                <th>Pulse Width</th>
+                                <th>Duty Cycle</th>
+                                <th>Jitter-Factor</th>
+                                <th>Inversions</th>
+                                <th>Nibble-XOR</th>
+                                <!-- <th>Gray Code</th> -->
+                                <th>Level</th>
+                                <!--<th>Decimal</th>-->
+                                <!--<th>CoreSequence01</th>
+                    <th>CoreSequence02</th>-->
+                                <th>Parity</th>
+                                <th>Distance</th>
+                                <th>Redundancy</th>
+                                <th>Resilience</th>
+                                <th>Asymmetry</th>
+                                <th>Autocorrelation</th>
+                                <th>Checksum</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="res in analysisResults" :key="res.Index" :class="'chakra-' + res.Index">
+                            <tr v-for="row in calcRows" :key="row.ID">
 
-                                <td class="res-name">{{ res.Name }}</td>
-                                <td class="res-val">{{ res.Drehimpuls?.toExponential(3) }}</td>
-                                <td class="res-val">{{ res.Huellvolumen?.toFixed(4) }}</td>
-                                <td class="res-val">{{ res.Phasenverschiebung?.toFixed(4) }}</td>
+                                <td class="res-name">{{ row.ID }}</td>
+
+                                <td>
+                                    <div class="binary-matrix">
+                                        <div v-for="(char, index) in row.Bits.split('')"
+                                             :key="index"
+                                             class="bit-field"
+                                             :class="{ 'active': char === '1' }"
+                                             :style="{
+                                                 backgroundColor: char === '1' ? calcPanelFarben[index] : '#222222',
+                                                 borderColor: char === '1' ? calcPanelFarben[index] : '#333333',
+                                                 color: calcPanelFarben[index]
+                                             }"
+                                             :title="'Bit-Index im String: ' + index">
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="res-val monobit">{{ row.ByteSequence }}</td>
+                                <td class="res-val">{{ row.BitsHex }}</td>
+
+                                <td class="res-val">{{ row.Weight }}</td>
+                                <td class="res-val">{{ row.Priority }}</td>
+                                <td class="res-val">{{ row.Entropy }}</td>
+                                <td class="res-val">{{ row.RunLength }}</td>
+                                <td class="res-val">{{ row.BitDensity }}</td>
+                                <td class="res-val">{{ row.SNR }}</td>
+                                <td class="res-val">{{ row.PulseWidth }}</td>
+                                <td class="res-val">{{ row.DutyCycle }}</td>
+                                <td class="res-val">{{ row.JitterFactor }}</td>
+                                <td class="res-val">{{ row.Inversions }}</td>
+                                <td class="res-val">{{ row.NibbleXOR }}</td>
+                                <!-- <td class="res-val">{{ row.GrayCode }}</td> -->
+                                c
+                                <td class="res-val">{{ row.Level }}</td>
+
+                                <!--<td class="res-val">{{ row.Decimal }}</td>-->
+                                <!--<td class="res-val">{{ row.CoreSequence01 }}</td>
+                    <td class="res-val">{{ row.CoreSequence02 }}</td>-->
+                                <td class="res-val">{{ row.Parity }}</td>
+                                <td class="res-val">{{ row.Distance }}</td>
+                                <td class="res-val">{{ row.Redundancy }}</td>
+                                <td class="res-val">{{ row.Resilience }}</td>
+                                <td class="res-val">{{ row.Asymmetry }}</td>
+                                <td class="res-val">{{ row.Autocorrelation }}</td>
+                                <td class="res-val">{{ row.CRC8 }}</td>
 
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="panel-actions">
-                    <button class="btn btn-refresh" @click="sqlAction('calculate_physics')">Werte Berechnen</button>
+                    <button class="btn btn-calc" @click="calculatePhysics">Werte Berechnen</button>
                     <button class="btn btn-excel" @click="sqlAction('export_excel')">Excel Export</button>
                     <button class="btn btn-save" @click="">Save to SQL</button>
                 </div>

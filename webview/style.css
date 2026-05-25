@@ -1,10 +1,10 @@
-/* System & Variablen */
+﻿/* System & Variablen */
 
 :root {
     --accent: #00d4ff;
     --text-main: #ffffff;
     --text-dim: #a0a0a0;
-    --clr-save: #00d4ff;
+    --clr-save: #FFFF00;
     --clr-excel: #2e7d32;
     --clr-seed: #4facfe;
     --clr-info: #00d4ff;
@@ -253,18 +253,30 @@ header {
     gap: 12px;
 }
 
-    .btn-toggle.active {
-        border-color: var(--accent);
-        color: #fff;
-        background: rgba(79, 172, 254, 0.1);
-        box-shadow: 0 0 15px rgba(79, 172, 254, 0.3);
+    .btn-toggle.btn-calc:hover {
+        border-color: #00FF00;
+        color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+
+    .btn-toggle.btn-graphics:hover {
+        border-color: var(--clr-graphics);
+        color: #ffffff;
+        box-shadow: 0 0 10px rgba(155, 93, 229, 0.3);
+    }
+
+    .btn-toggle.btn-calc.active {
+        border-color: #00FF00;
+        color: #00FF00;
+        background: rgba(0, 255, 0, 0.05);
+        box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.15), 0 0 15px rgba(0, 255, 0, 0.2);
     }
 
     .btn-toggle.btn-graphics.active {
         border-color: var(--clr-graphics);
+        color: #fff;
         background: rgba(155, 93, 229, 0.1);
         box-shadow: 0 0 15px rgba(155, 93, 229, 0.3);
-        color: #fff;
     }
 
 .status-dot {
@@ -273,11 +285,12 @@ header {
     border-radius: 50%;
     background: #444;
     box-shadow: inset 0 0 3px #000;
+    transition: all 0.4s ease;
 }
 
-.btn-toggle.active .status-dot {
-    background: var(--clr-seed);
-    box-shadow: 0 0 8px var(--accent), 0 0 2px white;
+.btn-toggle.btn-calc.active .status-dot {
+    background-color: #00FF00;
+    box-shadow: 0 0 8px #00FF00, 0 0 15px #00FF00;
 }
 
 .btn-toggle.btn-graphics.active .status-dot {
@@ -285,30 +298,44 @@ header {
     box-shadow: 0 0 8px var(--clr-graphics), 0 0 2px white;
 }
 
-.btn-save {
-    background: rgba(0, 212, 255, 0.05);
-    border: 1px solid var(--clr-save);
-    color: var(--clr-save);
-    font-size: 0.8rem;
+.panel-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
 }
 
-    .btn-save:hover {
-        background: var(--clr-save);
-        color: #000;
-        box-shadow: 0 0 15px var(--clr-save);
+.panel-actions .btn {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #333333;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+    .panel-actions .btn:hover {
+        color: #000000;
+        box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
     }
 
-.btn-excel {
-    background: rgba(46, 125, 50, 0.1);
-    border: 1px solid var(--clr-excel);
+.panel-actions .btn-calc {
+    border-color: var(--clr-seed);
+    color: var(--clr-seed);
+}
+
+.panel-actions .btn-excel {
+    border-color: var(--clr-excel);
     color: var(--clr-excel);
 }
 
-    .btn-excel:hover {
-        background: var(--clr-excel);
-        color: white;
-        box-shadow: 0 0 15px var(--clr-excel);
-    }
+.panel-actions .btn-save {
+    border-color: var(--clr-save);
+    color: var(--clr-save);
+}
 
 .btn-graphics-panel {
     width: 100%;
@@ -422,6 +449,56 @@ tbody tr:last-child td:first-child {
     border-bottom-left-radius: 12px;
 }
 
+.analysis-table-wrapper {
+    width: 100%;
+    max-width: calc(100vw - 120px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 15px;
+}
+
+    .analysis-table-wrapper::-webkit-scrollbar {
+        height: 13px;
+    }
+
+    .analysis-table-wrapper::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+    }
+
+    .analysis-table-wrapper::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+    }
+
+        .analysis-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 172, 254, 0.4);
+        }
+
+.analysis-table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.analysis-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.analysis-table .binary-matrix {
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.res-val {
+    white-space: nowrap !important;
+    padding: 10px 16px !important;
+}
+
 /* Werte - Gemeinsamkeiten */
 /* Physics */
 
@@ -515,7 +592,7 @@ tbody tr:last-child td:first-child {
 }
 
 .chakra-3 {
-    color: #008000 !important;
+    color: #00FF00 !important;
 }
 
 .chakra-4 {
@@ -523,11 +600,11 @@ tbody tr:last-child td:first-child {
 }
 
 .chakra-5 {
-    color: #4b0082 !important;
+    color: #BF00FF !important;
 }
 
 .chakra-6 {
-    color: #ee82ee !important;
+    color: #FF00FF !important;
 }
 
 /* Footer */

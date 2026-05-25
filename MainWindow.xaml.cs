@@ -3,6 +3,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Microsoft.Win32;
 using SuperChakra.main;
 using SuperChakra.system;
+using SuperChakra.system.panel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,14 +11,16 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Web;
 using Path = System.IO.Path;
+using System.Web;
+using System.Text;
 
 namespace SuperChakra
 {
@@ -81,16 +84,54 @@ namespace SuperChakra
                 switch (command)
                 {
                     case "refresh":
+
                         await system.RefreshDashboardDataAsync(activeView);
                         return;
+
                     case "app_exit":
+
                         Application.Current.Shutdown();
                         return;
-                    case "calc_physics":
 
+                    case "calc":
+
+                        var physicsRow = new List<ChakraPanelCalcPhysics>();
+
+                        for (int i = 0; i < 7; i++)
+                        {
+                            ChakraPhysics sourceObj = new ChakraPhysics(i);
+                            physicsRow.Add(new ChakraPanelCalcPhysics(sourceObj));
+                        }
+
+                        ChakraBinary coreBinary = new ChakraBinary(0);
+                        var calcRows = new List<ChakraPanelCalc>
+                        {
+                            new ChakraPanelCalc("Sequence_01", coreBinary),
+                            new ChakraPanelCalc("Sequence_02", coreBinary),
+                            new ChakraPanelCalc("CombinedSequence_01_02", coreBinary),
+                            new ChakraPanelCalc("CombinedSequence_03", coreBinary)
+                        };
+
+                        var responseData = new { calcData = calcRows, physicsData = physicsRow };
+                        var jsonPayload = JsonSerializer.Serialize(responseData);
+
+                        byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonPayload);
+                        string base64Payload = Convert.ToBase64String(jsonBytes);
+
+                        await system.ExecuteScriptAsync($"window.updateCalcPanelBase64('{base64Payload}');");
                         return;
+
                     case "export_excel":
 
+                        return;
+
+                    case "request_graphics_data":
+
+                        ChakraPanelGraphics panelGraphics = new ChakraPanelGraphics(this.app);
+                        string jsonResult = panelGraphics.GetGraphicsDataJson();
+                        string escapedJson = HttpUtility.JavaScriptStringEncode(jsonResult);
+
+                        await system.ExecuteScriptAsync($"window.renderChakraCharts('{escapedJson}');");
                         return;
                 }
 

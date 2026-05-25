@@ -9,13 +9,22 @@ const app = createApp({
             showGraphics: false,
             chakraData: [],
             analysisResults: [],
-            version: '1.3.6',
+            version: '1.3.8',
+
+            calcRows: [],
+            calcPhysicsRows: [],
 
             chartDichte: null,
             chartDrehimpuls: null,
             chartRadar: null,
 
-            chakraFarben: ['#FF0000', '#FF8C00', '#FFFF00', '#008000', '#00BFFF', '#4B0082', '#800080']
+            chakraFarben: ['#FF0000', '#FF8C00', '#FFFF00', '#00FF00', '#00BFFF', '#BF00FF', '#FF00FF'],
+
+            calcPanelFarben: [
+                '#333333', '#FF00FF', '#BF00FF', '#00BFFF', '#00FF00', '#FFFF00', '#FF8C00', '#FF0000',
+
+                '#333333', '#FF00FF', '#BF00FF', '#00BFFF', '#00FF00', '#FFFF00', '#FF8C00', '#FF0000'
+            ]
 
         }
     },
@@ -272,9 +281,18 @@ const app = createApp({
             const targetChar = cleanStr.charAt(cleanStr.length - 1 - position);
 
             return targetChar === '1';
+        },
+
+        calculatePhysics() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage({
+                    command: 'calc',
+                    view: this.activeView
+                });
+            } else {
+                console.error("WebView2-Schnittstelle steht nicht zur Verfügung.");
+            }
         }
-
-
 
     },  
 
@@ -319,6 +337,30 @@ window.renderChakraCharts = (rawChartData) => {
 
     } catch (e) {
         console.error("Kritischer Fehler bei window.renderChakraCharts:", e);
+    }
+};
+
+//window.updateCalcPanel = (safeJsonData) => {
+//    try {
+//        const data = typeof safeJsonData === 'string' ? JSON.parse(safeJsonData) : safeJsonData;
+//        vm.calcRows = data;
+//    } catch (e) {
+//        console.error("Fehler bei window.updateCalcPanel:", e);
+//    }
+//};
+
+window.updateCalcPanelBase64 = function (base64Str) {
+    try {
+        let jsonStr = decodeURIComponent(escape(window.atob(base64Str)));
+        let data = JSON.parse(jsonStr);
+
+        app.calcRows = data.calcData;
+        app.calcPhysicsRows = data.physicsData;
+
+        console.log("Erfolgreich geladen! Physics:", data.physicsData.length, "Calc:", data.calcData.length);
+    }
+    catch (error) {
+        console.error("Kritischer Fehler beim Auspacken des Base64-Pakets:", error);
     }
 };
 
