@@ -14,22 +14,67 @@ namespace SuperChakra.system.panel
         public double Radius { get; set; }
 
         public string TangenzGeschwindigkeit { get; set; }
+        public string InformationsGehalt { get; set; }
+        public string ResonanzQuotient { get; set; }
+        public int RawBit { get; set; }
+        public int HalbWelleBit { get; set; }
+        public int ViertelWelleBit { get; set; }
+
+
+        // STANDARD-KONSTRUKTOR
 
         public ChakraPanelCalcPhysics() { }
 
+        // KONSTRUKTOR
+
         public ChakraPanelCalcPhysics(ChakraPhysics source) 
         {
-            Index = source.Index + 1;
-            Name = source.Name;            
+            this.Index = source.Index + 1;
+            this.Name = source.Name;            
 
-            this.Frequenz = this.Frequenz;
-            this.Radius = this.Radius;
+            double echteFrequenz = source.Frequenz;
+            double echterRadius = source.Radius;
+            double tangenzGeschwindigkeit = 2.0 * Math.PI * echteFrequenz * echterRadius;
 
-            double tangenzGeschwindigkeit = 2.0 * Math.PI * this.Frequenz * this.Radius;
+            if (tangenzGeschwindigkeit == 0)
+                tangenzGeschwindigkeit = 2.0 * Math.PI * source.GetFrequenceByIndex(source.Index) * source.GetRadiusByIndex(source.Index);
 
             this.TangenzGeschwindigkeit = $"{tangenzGeschwindigkeit:F2} m/s".Replace('.', ',');
 
+            double lambda = source.Wellenlaenge;
+
+            if (lambda > 0) 
+            {
+                double infoRaw = source.Radius / lambda;
+                this.InformationsGehalt = $"{infoRaw:F5}".Replace('.', ',');
+                this.RawBit = (int)Math.Floor(infoRaw);
+
+                double umfang = 2.0 * Math.PI * source.Radius;
+                double wellenUmlauf = umfang / (lambda * 2.0 * Math.PI);
+                this.ResonanzQuotient = $"{wellenUmlauf:F5}".Replace('.', ',');
+
+                this.RawBit = source.RawBit;
+
+                double halbWelleRaw = source.Radius / (source.Wellenlaenge / 2.0);
+                this.HalbWelleBit = (int)Math.Floor(halbWelleRaw);
+
+                double viertelWelleRaw = source.Radius / (source.Wellenlaenge / 4.0);
+                this.ViertelWelleBit = (int)Math.Floor(viertelWelleRaw);
+
+            }
+            else 
+            {
+                this.InformationsGehalt = "0,00000";                
+                this.ResonanzQuotient = "0,00000";
+                this.RawBit = 0;
+                this.HalbWelleBit = 0;
+                this.ViertelWelleBit = 0;
+            }           
+
+
         }
+
+        // METHODEN
 
     }
 
@@ -43,6 +88,9 @@ namespace SuperChakra.system.panel
         public string Bits { get; set; }
         public string BitsHex { get; set; }
         public string ByteSequence { get; set; }
+        public string ByteSequenceHalbWelle { get; set; }
+        public string ByteSequenceViertelWelle { get; set; }
+
 
         public int Weight { get; set; }
         public string Priority { get; set; }
