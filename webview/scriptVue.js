@@ -13,6 +13,8 @@ const app = createApp({
 
             calcRows: [],
             calcPhysicsRows: [],
+            showPhysicsTable: true,
+            showBinaryTable: true,
 
             chartDichte: null,
             chartDrehimpuls: null,
@@ -284,14 +286,26 @@ const app = createApp({
         },
 
         calculatePhysics() {
+            this.showPhysicsTable = true;
             if (window.chrome && window.chrome.webview) {
-                window.chrome.webview.postMessage({
-                    command: 'calc',
-                    view: this.activeView
-                });
+                window.chrome.webview.postMessage("calc_physics");
             } else {
                 console.error("WebView2-Schnittstelle steht nicht zur Verfügung.");
             }
+        },
+
+        hidePhysics() {
+            this.showPhysicsTable = false;
+        },
+
+        calculateBinary() {
+            this.showBinaryTable = true;
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage("calc_binary");
+            }
+        },
+        hideBinary() {
+            this.showBinaryTable = false;
         }
 
     },  
@@ -349,18 +363,19 @@ window.renderChakraCharts = (rawChartData) => {
 //    }
 //};
 
-window.updateCalcPanelBase64 = function (base64Str) {
+window.updatePhysicsOnlyBase64 = function (base64Str) {
     try {
         let jsonStr = decodeURIComponent(escape(window.atob(base64Str)));
         let data = JSON.parse(jsonStr);
-
-        app.calcRows = data.calcData;
         app.calcPhysicsRows = data.physicsData;
+    } catch (e) { console.error("Physics-Parsing-Fehler:", e); }
+};
 
-        console.log("Erfolgreich geladen! Physics:", data.physicsData.length, "Calc:", data.calcData.length);
-    }
-    catch (error) {
-        console.error("Kritischer Fehler beim Auspacken des Base64-Pakets:", error);
-    }
+window.updateBinaryOnlyBase64 = function (base64Str) {
+    try {
+        let jsonStr = decodeURIComponent(escape(window.atob(base64Str)));
+        let data = JSON.parse(jsonStr);
+        app.calcRows = data.calcData;
+    } catch (e) { console.error("Binary-Parsing-Fehler:", e); }
 };
 

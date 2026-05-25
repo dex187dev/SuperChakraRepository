@@ -299,72 +299,111 @@ header {
 }
 
 .panel-actions {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 160px 160px 140px 140px;
+    grid-template-rows: 38px 38px;
+    gap: 10px 15px;
+    margin: 20px 0;
 }
 
-.panel-actions .btn {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid #333333;
-    padding: 7px 16px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 120px;
-    text-align: center;
-}
-
-    .panel-actions .btn:hover {
-        color: #000000;
-        box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+    .panel-actions .btn {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid #333333;
+        padding: 0 16px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-.panel-actions .btn-calc {
-    border-color: var(--clr-seed);
-    color: var(--clr-seed);
+        .panel-actions .btn:hover {
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.2);
+        }
+
+.btn-excel {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    height: 100% !important;
+    background: #0e623b !important;
+    color: #ffffff !important;
+    border: 1px solid #107c41 !important;
 }
 
-.panel-actions .btn-excel {
-    border-color: var(--clr-excel);
-    color: var(--clr-excel);
+    .btn-excel:hover {
+        background: #107c41 !important;
+        box-shadow: 0 0 12px rgba(16, 124, 65, 0.4) !important;
+    }
+
+.btn-save {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    height: 100% !important;
+    background: #b45309 !important;
+    color: #ffffff !important;
+    border: 1px solid #d97706 !important;
 }
 
-.panel-actions .btn-save {
-    border-color: var(--clr-save);
-    color: var(--clr-save);
+    .btn-save:hover {
+        background: #d97706 !important;
+        box-shadow: 0 0 12px rgba(217, 119, 6, 0.4) !important;
+    }
+
+.btn-physics-calc {
+    background: #065f46 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #047857 !important;
+    grid-column: 1;
+    grid-row: 1;
 }
 
-.btn-graphics-panel {
-    width: 100%;
-    margin-top: 30px;
-    padding: 10px;
-    background: transparent;
+    .btn-physics-calc:hover {
+        background: #047857 !important;
+    }
+
+.btn-binary-calc {
+    background: #1e3a8a !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #1d4ed8 !important;
+    grid-column: 2;
+    grid-row: 1;
 }
 
-.graphics-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 15px;
-    width: 100%;
+    .btn-binary-calc:hover {
+        background: #1d4ed8 !important;
+    }
+
+.btn-physics-hide {
+    background: rgba(6, 95, 70, 0.15) !important;
+    color: #a7f3d0 !important;
+    border: 1px solid rgba(4, 120, 87, 0.4) !important;
+    grid-column: 1;
+    grid-row: 2;
 }
 
-.chart-box {
-    flex: 1;
-    min-width: 300px;
-    max-width: 32%;
-    background-color: #111111;
-    border: 1px solid #222222;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-    min-height: 340px;
+    .btn-physics-hide:hover {
+        background: rgba(6, 95, 70, 0.3) !important;
+        border-color: #047857 !important;
+    }
+
+.btn-binary-hide {
+    background: rgba(30, 58, 138, 0.15) !important;
+    color: #bfdbfe !important;
+    border: 1px solid rgba(29, 78, 216, 0.4) !important;
+    grid-column: 2;
+    grid-row: 2;
 }
+
+    .btn-binary-hide:hover {
+        background: rgba(30, 58, 138, 0.3) !important;
+        border-color: #1d4ed8 !important;
+    }
 
 /* Tabellen */
 

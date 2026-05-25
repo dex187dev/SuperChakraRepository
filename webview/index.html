@@ -289,7 +289,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="pRow in physicsRows" :key="pRow.Index">
+                            <tr v-for="pRow in calcPhysicsRows" :key="pRow.Index">
                                 <td class="res-val">{{ pRow.Index }}</td>
                                 <td class="res-val">{{ pRow.Name }}</td>
                                 <td class="res-val">{{ pRow.TangenzGeschwindigkeit }}</td>
@@ -325,7 +325,7 @@
                                 <th>Level</th>
                                 <!--<th>Decimal</th>-->
                                 <!--<th>CoreSequence01</th>
-                    <th>CoreSequence02</th>-->
+                                <th>CoreSequence02</th>-->
                                 <th>Parity</th>
                                 <th>Distance</th>
                                 <th>Redundancy</th>
@@ -371,12 +371,11 @@
                                 <td class="res-val">{{ row.Inversions }}</td>
                                 <td class="res-val">{{ row.NibbleXOR }}</td>
                                 <!-- <td class="res-val">{{ row.GrayCode }}</td> -->
-                                c
                                 <td class="res-val">{{ row.Level }}</td>
 
                                 <!--<td class="res-val">{{ row.Decimal }}</td>-->
                                 <!--<td class="res-val">{{ row.CoreSequence01 }}</td>
-                    <td class="res-val">{{ row.CoreSequence02 }}</td>-->
+                                <td class="res-val">{{ row.CoreSequence02 }}</td>-->
                                 <td class="res-val">{{ row.Parity }}</td>
                                 <td class="res-val">{{ row.Distance }}</td>
                                 <td class="res-val">{{ row.Redundancy }}</td>
@@ -390,7 +389,12 @@
                     </table>
                 </div>
                 <div class="panel-actions">
-                    <button class="btn btn-calc" @click="calculatePhysics">Werte Berechnen</button>
+                    <button class="btn btn-calc btn-physics-calc" @click="calculatePhysics()">Physics Berechnen</button>
+                    <button class="btn btn-calc btn-binary-calc" @click="calculateBinary()">Binary Berechnen</button>
+
+                    <button class="btn btn-calc btn-physics-hide" @click="hidePhysics()">Physics Ausblenden</button>
+                    <button class="btn btn-calc btn-binary-hide" @click="hideBinary()">Binary Ausblenden</button>
+
                     <button class="btn btn-excel" @click="sqlAction('export_excel')">Excel Export</button>
                     <button class="btn btn-save" @click="">Save to SQL</button>
                 </div>

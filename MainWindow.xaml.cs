@@ -93,16 +93,22 @@ namespace SuperChakra
                         Application.Current.Shutdown();
                         return;
 
-                    case "calc":
-
+                    case "calc_physics":
                         var physicsRow = new List<ChakraPanelCalcPhysics>();
-
                         for (int i = 0; i < 7; i++)
                         {
                             ChakraPhysics sourceObj = new ChakraPhysics(i);
                             physicsRow.Add(new ChakraPanelCalcPhysics(sourceObj));
                         }
 
+                        var physicsPayload = JsonSerializer.Serialize(new { physicsData = physicsRow });
+                        byte[] physBytes = System.Text.Encoding.UTF8.GetBytes(physicsPayload);
+                        string physBase64 = Convert.ToBase64String(physBytes);
+
+                        await system.ExecuteScriptAsync($"window.updatePhysicsOnlyBase64('{physBase64}');");
+                        return;
+
+                    case "calc_binary":
                         ChakraBinary coreBinary = new ChakraBinary(0);
                         var calcRows = new List<ChakraPanelCalc>
                         {
@@ -112,13 +118,11 @@ namespace SuperChakra
                             new ChakraPanelCalc("CombinedSequence_03", coreBinary)
                         };
 
-                        var responseData = new { calcData = calcRows, physicsData = physicsRow };
-                        var jsonPayload = JsonSerializer.Serialize(responseData);
+                        var binaryPayload = JsonSerializer.Serialize(new { calcData = calcRows });
+                        byte[] binBytes = System.Text.Encoding.UTF8.GetBytes(binaryPayload);
+                        string binBase64 = Convert.ToBase64String(binBytes);
 
-                        byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonPayload);
-                        string base64Payload = Convert.ToBase64String(jsonBytes);
-
-                        await system.ExecuteScriptAsync($"window.updateCalcPanelBase64('{base64Payload}');");
+                        await system.ExecuteScriptAsync($"window.updateBinaryOnlyBase64('{binBase64}');");
                         return;
 
                     case "export_excel":
