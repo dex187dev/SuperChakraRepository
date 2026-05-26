@@ -47,6 +47,16 @@ namespace SuperChakra.main
         public byte Sequence_01 => sequence_01;
         public byte Sequence_02 { get; private set; }
 
+        public ushort CombinedSequence_01_02
+        {
+            get
+            {
+                byte part1 = Sequence_01;
+                byte part2 = ChakraBinary.CalcOriginalBytesComplement(part1);
+                return (ushort)((part1 << 8) | part2);
+            }
+        }
+
         // ### ORIGINAL BYTES CHAKRAS ###
 
         public byte OriginalBytes { get; }

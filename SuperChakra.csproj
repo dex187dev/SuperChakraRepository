@@ -6,12 +6,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+
+	  <!--APP -->
+
+	  <Product>SuperChakra</Product>
+	  <Title>Arbeitstitel: Semesterarbeit</Title>
+	  <Description>Chakra Cookbook</Description>
+	  <Company></Company>
 	  
 	<!--VERSION -->
 
-	  <Version>1.3.6</Version>
-	  <AssemblyVersion>1.3.6.1</AssemblyVersion>
-	  <FileVersion>1.3.6.1</FileVersion>
+	  <Version>1.3.8</Version>
+	  <AssemblyVersion>1.3.8.1</AssemblyVersion>
+	  <FileVersion>1.3.8.1</FileVersion>
 	  
   </PropertyGroup>
 
@@ -109,6 +116,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="webview\frameworks\apexcharts.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\frameworks\babylon.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="webview\frameworks\two.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="webview\frameworks\vue3-apexcharts.js">

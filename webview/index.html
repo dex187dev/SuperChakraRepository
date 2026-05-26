@@ -279,13 +279,18 @@
 
                 <h4>Physics Ergebnisse</h4>
 
-                <div class="analysis-table-wrapper">
+                <div class="analysis-table-wrapper" v-if="showPhysicsTable">
                     <table class="analysis-table">
                         <thead>
                             <tr>
                                 <th>Index</th>
                                 <th>Name</th>
                                 <th>TangenzGeschwindigkeit</th>
+                                <th>Informationsgehalt</th>
+                                <th>Resonanz Quotient</th>
+                                <th>Raw Bit Capacity</th>
+                                <th>Halbwelle</th>
+                                <th>Viertelwelle</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -293,6 +298,11 @@
                                 <td class="res-val">{{ pRow.Index }}</td>
                                 <td class="res-val">{{ pRow.Name }}</td>
                                 <td class="res-val">{{ pRow.TangenzGeschwindigkeit }}</td>
+                                <td class="res-val">{{ pRow.InformationsGehalt }}</td>
+                                <td class="res-val">{{ pRow.ResonanzQuotient }}</td>
+                                <td class="res-val">{{ pRow.RawBit }}</td>
+                                <td class="res-val">{{ pRow.HalbWelleBit }}</td>
+                                <td class="res-val">{{ pRow.ViertelWelleBit }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -301,7 +311,7 @@
                 <!-- Binary -->
 
                 <h4>Binary Ergebnisse</h4>
-                <div class="analysis-table-wrapper">
+                <div class="analysis-table-wrapper" v-if="showBinaryTable">
                     <table class="analysis-table">
                         <thead>
                             <tr>

@@ -35,7 +35,7 @@ namespace SuperChakra
 
         // FELDER
 
-        private ChakraSystem system;
+        private ChakraSystem system;        
 
         // KONSTRUKTOR
 
@@ -47,7 +47,7 @@ namespace SuperChakra
             sqlService = new ChakraSQL(app);
             fileService = new ChakraFile(app);
 
-            this.Title = $"{app.AppName} - {app.Version}{(app.IsDebugMode ? " (DEBUG)" : "")}";
+            this.Title = $"{app.AppName} - {app.Version}{(app.IsDebugMode ? " (DEBUG)" : "")} - [{app.Arbeitstitel}]";
 
         }
 
@@ -221,45 +221,7 @@ namespace SuperChakra
             {
                 Debug.WriteLine($"Error in MainWindow Core: {ex.Message}");
             }
-        }
-
-        private async void CalcAndShow() 
-        {            
-            ChakraPhysics previousChakra = null;
-
-            var results = await Task.Run(() => {
-
-                var list = new List<object>();
-
-                for (int i = 0; i < 7; i++)
-                {
-                    ChakraPhysics cp = new ChakraPhysics(i);
-
-                    double d = cp.DrehimpulsCalc();
-                    double h = cp.HuellvolumenCalc();
-
-                    double p = (previousChakra != null)
-                        ? cp.PhasenverschiebungCalc(previousChakra)
-                        : 0;
-
-                    list.Add(new
-                    {
-                        Index = i,
-                        Name = cp.Name,
-                        Drehimpuls = d,
-                        Huellvolumen = h,
-                        Phasenverschiebung = p
-                    });
-
-                    previousChakra = cp;
-                }
-
-                return list;
-            });
-            
-            string jsonResults = JsonSerializer.Serialize(results);
-            //await webView.CoreWebView2.ExecuteScriptAsync($"displayAnalysisResults({jsonResults})");
-        }
+        }       
 
         private async void CalcAndSaveToExcel() 
         {

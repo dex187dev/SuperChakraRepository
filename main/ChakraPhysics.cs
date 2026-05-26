@@ -68,6 +68,12 @@ namespace SuperChakra.main
         public double Huellvolumen { get; set; }
         public double Phasenverschiebung { get; set; }
 
+        public string InformationsGehalt { get; set; }
+
+        public int RawBit => (int)Math.Floor(Radius / Wellenlaenge);
+        public int HalbWelleBit => (int)Math.Floor(Radius / (Wellenlaenge / 2.0));
+        public int ViertelWelleBit => (int)Math.Floor(Radius / (Wellenlaenge / 4.0));
+
         // KONSTRUKTOR
 
         public ChakraPhysics(int index) 
@@ -104,6 +110,16 @@ namespace SuperChakra.main
         public double PhasenlageCalc() 
         {
             return 2 * Math.PI * Frequenz * Zeit;
+        }
+
+        public double GetFrequenceByIndex(int index) 
+        {
+            return frequenz[Math.Clamp(index, 0, 6)];
+        }
+
+        public double GetRadiusByIndex(int index)
+        {
+            return frequenz[Math.Clamp(index, 0, 6)];
         }
 
         // Methoden

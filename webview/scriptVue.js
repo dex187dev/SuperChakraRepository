@@ -10,6 +10,7 @@ const app = createApp({
             chakraData: [],
             analysisResults: [],
             version: '1.3.8',
+            arbeitstitel: 'Semesterarbeit',
 
             calcRows: [],
             calcPhysicsRows: [],
@@ -95,10 +96,6 @@ const app = createApp({
             } else {
                 this.analysisResults = results;
             }
-        },
-
-        setAppVersion(v) {
-            this.version = v;
         },
 
         toggleGraphics() {
@@ -287,22 +284,14 @@ const app = createApp({
 
         calculatePhysics() {
             this.showPhysicsTable = true;
-            if (window.chrome && window.chrome.webview) {
-                window.chrome.webview.postMessage("calc_physics");
-            } else {
-                console.error("WebView2-Schnittstelle steht nicht zur Verfügung.");
-            }
+            this.sendToApp("calc_physics");
         },
-
         hidePhysics() {
             this.showPhysicsTable = false;
         },
-
         calculateBinary() {
             this.showBinaryTable = true;
-            if (window.chrome && window.chrome.webview) {
-                window.chrome.webview.postMessage("calc_binary");
-            }
+            this.sendToApp("calc_binary");
         },
         hideBinary() {
             this.showBinaryTable = false;
@@ -367,7 +356,7 @@ window.updatePhysicsOnlyBase64 = function (base64Str) {
     try {
         let jsonStr = decodeURIComponent(escape(window.atob(base64Str)));
         let data = JSON.parse(jsonStr);
-        app.calcPhysicsRows = data.physicsData;
+        vm.calcPhysicsRows = data.physicsData;
     } catch (e) { console.error("Physics-Parsing-Fehler:", e); }
 };
 
@@ -375,7 +364,19 @@ window.updateBinaryOnlyBase64 = function (base64Str) {
     try {
         let jsonStr = decodeURIComponent(escape(window.atob(base64Str)));
         let data = JSON.parse(jsonStr);
-        app.calcRows = data.calcData;
+        vm.calcRows = data.calcData;
     } catch (e) { console.error("Binary-Parsing-Fehler:", e); }
+};
+
+window.updateAppMetadata = function (jsonStr) {
+    try {
+        let data = JSON.parse(jsonStr);
+
+        vm.version = data.version;
+        vm.arbeitstitel = data.arbeitstitel;
+    }
+    catch (error) {
+        console.error("Fehler beim Laden der App-Metadaten:", error);
+    }
 };
 
